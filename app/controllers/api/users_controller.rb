@@ -5,73 +5,55 @@ class Api::UsersController < ApplicationController
 
   def create
     user = User.new(name: params["name"], email: params["email"], password: params["password"], fav_markets: [])
-    if user.valid? && user.save
-      jwt = Auth.issue({user: user.id})
-      render json: {jwt: jwt}
+    if user.save
+      render json: user
     else
-      errors = []
-      user.errors.full_messages.each do |msg|
-        errors << {text: msg, type: "error"}
-      end
-      render json: errors, status: 400
+      render json: { message: user.errors}, status:400
     end
   end
+
+
 
   def show
     render json: @user, status: 200
   end
 
+
   def add_favorite
-    hike = Hike.find_by_id(hike_params["id"]) || Hike.new(hike_params) #checks if the hike exists in hikes table, if not creates one
-    if @user.hikes.detect{|h| h.id == hike.id}
+    market = Market.find_by_id(market_params["id"])
+    if @user.markets.detect{|h| h.id == market.id}
       render json: {text: "You have already favorited this hike", type: "error"}, status: 405
     else
-      @user.add_to_favorite(hike)
-      render json: @user.hikes, status: 200
+      @user.markets << market
+      render json: @user.markets, status: 200
     end
   end
 
-  def delete_favorite
+  #def delete_favorite
     #deletes @user's favorite hike by id
-    @user.delete_favorite(params["hike_id"])
-    render json: @user.hikes, status: 200
-  end
+  #  @user.delete_favorite(params["hike_id"])
+  #  render json: @user.hikes, status: 200
+  #end
 
-  def clear_favorites
+  #def clear_favorites
     #clears all favorites associated to @user
-    @user.remove_all_favorites
-    render json: @user.hikes, status: 200
-  end
+  #  @user.remove_all_favorites
+  #  render json: @user.hikes, status: 200
+  #end
 
   private
 
-  def set_user
-    @user = @current_user
-  end
+  #def set_user
+  #  @user = @current_user
+  #end
 
-  def hike_params
-    params.require(:hike).permit(
-      :id,
+  def market_params
+    params.require(:market).permit(
       :name,
-      :summary,
-      :difficulty,
-      :stars,
-      :starVotes,
-      :location,
-      :imgSqSmall,
-      :imgSmall,
-      :imgSmallMed,
-      :imgMedium,
-      :length,
-      :ascent,
-      :descent,
-      :high,
-      :low,
-      :longitude,
-      :latitude,
-      :conditionStatus,
-      :conditionDetails,
-      :conditionDate
+      :address,
+      :GoogleLink,
+      :products;
+      :schedule
     )
   end
 
