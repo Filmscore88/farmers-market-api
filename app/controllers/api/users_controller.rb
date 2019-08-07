@@ -20,14 +20,14 @@ class Api::UsersController < ApplicationController
 
 
   def add_favorite
-    market = Market.find_by_id(market_params["id"])
-    if @user.markets.detect{|h| h.id == market.id}
-      render json: {text: "You have already favorited this hike", type: "error"}, status: 405
-    else
-      @user.markets << market
-      render json: @user.markets, status: 200
-    end
-  end
+    market = Market.find_by_id(market["id"]) || Market.new(market_params)
+   if @user.markets.detect{|h| h.id == market.id}
+     render json: {text: "You have already favorited this market", type: "error"}, status: 405
+   else
+     @user.add_to_favorite(market)
+     render json: @user.markets, status: 200
+   end
+ end
 
   #def delete_favorite
     #deletes @user's favorite hike by id
