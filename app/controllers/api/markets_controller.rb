@@ -1,24 +1,19 @@
 class Api::MarketsController < ApplicationController
 
     def index
-      render json: Market.all
+      @markets= Market.all
+      render json: @markets
     end
 
     def create
       market= Market.new(market_params)
-      if market.save 
-        render json:market
-      end
+        render json: market
     end
 
 
     def show
-      @market= Market.find_by(id: params[:id])
-      if @market
+      @market= Market.find_by(id: params[:id]) 
         render json: @market
-      else
-        render json: { message: user.errors}, status:400
-      end
     end
 
     private

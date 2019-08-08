@@ -5,11 +5,7 @@ class Api::UsersController < ApplicationController
 
   def create
     user = User.new(name: params["name"], email: params["email"], password: params["password"], fav_markets: [])
-    if user.save
       render json: user
-    else
-      render json: { message: user.errors}, status:400
-    end
   end
 
 
@@ -24,7 +20,7 @@ class Api::UsersController < ApplicationController
    if @user.markets.detect{|h| h.id == market.id}
      render json: {text: "You have already favorited this market", type: "error"}, status: 405
    else
-     @user.add_to_favorite(market)
+     @user.markets << market
      render json: @user.markets, status: 200
    end
  end
