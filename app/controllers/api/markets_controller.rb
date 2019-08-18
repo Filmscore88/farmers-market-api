@@ -6,18 +6,21 @@ class Api::MarketsController < ApplicationController
     end
 
     def create
-      market= Market.new(market_params)
+
+      market= Market.create(market_params)
         render json: market
     end
 
 
     def show
+
       @market= Market.find_by(id: params[:id])
         render json: @market
     end
 
 
     def update
+      @market= Market.find(id: params[:id])
       if @market.update(market_params)
         render json: @market, status: 200
       else
