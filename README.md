@@ -8,7 +8,6 @@ farmers-market-api along with farmers-market-client is a web application used to
    4- open farmers-market-client in a different terminal window and follow ReadMe instructions for that repo.
 ```
 
-```
 
 ## Usage
 
