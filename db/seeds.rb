@@ -10,29 +10,35 @@ require 'rest-client'
 #   Character.create(name: 'Luke', movie: movies.first)
 
 url = 'https://search.ams.usda.gov/farmersmarkets/v1/data.svc/zipSearch?zip=60007'
+
 response = RestClient.get(url)
+
 data= JSON.parse(response)
+
 array=[]
-data["results"].each do |article, index|
-  new_market= {}
-  new_market[:id]= article["id"]
-  new_market[:name]= article["marketname"]
 
-  array << new_market
+  data["results"].each do |article, index|
+    new_market= {}
+    new_market[:id]= article["id"]
+    new_market[:name]= article["marketname"]
 
+    array << new_market
+  end
 
-end
 
 index= "http://search.ams.usda.gov/farmersmarkets/v1/data.svc/mktDetail?id="
-array.each do |market|
-answer= RestClient.get("#{index}"+"#{market[:id]}")
-info= JSON.parse(answer)
-name= market[:name]
-address= info["marketdetails"]["Address"]
-glink=  info["marketdetails"]["GoogleLink"]
-products=  info["marketdetails"]["Products"]
-schedule=  info["marketdetails"]["Schedule"]
 
-Market.create(name: name, address: address, GoogleLink: glink, products: products, schedule: schedule)
+  array.each do |market|
 
-end
+    answer= RestClient.get("#{index}"+"#{market[:id]}")
+    info= JSON.parse(answer)
+    
+    name= market[:name]
+    address= info["marketdetails"]["Address"]
+    glink=  info["marketdetails"]["GoogleLink"]
+    products=  info["marketdetails"]["Products"]
+    schedule=  info["marketdetails"]["Schedule"]
+
+    Market.create(name: name, address: address, GoogleLink: glink, products: products, schedule: schedule)
+
+  end

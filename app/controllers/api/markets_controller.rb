@@ -6,9 +6,8 @@ class Api::MarketsController < ApplicationController
     end
 
     def create
-
       market= Market.create(market_params)
-        render json: market
+      render json: market
     end
 
 
